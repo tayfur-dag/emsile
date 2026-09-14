@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Emsile Takip</title>
+<meta name="theme-color" content="#F7F2E4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Emsile">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>html,body{margin:0;padding:0;background:#F7F2E4}
+  body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}</style>
+</head>
+<body>
+<style>
+  :root{--kagit:#F7F2E4;--kagit2:#EFE7D3;--murekkep:#241C12;--murekkep-soluk:#6B5E49;
+        --kirmizi:#A32B26;--yesil:#4A6B3A;--cetvel:#C3B394;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  #app{background:var(--kagit);color:var(--murekkep);
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:16px;line-height:1.5;padding:18px 14px 60px;max-width:720px;margin:0 auto;min-height:100vh}
+  .ar{font-family:"Traditional Arabic","Amiri","Scheherazade New",serif;direction:rtl;unicode-bidi:isolate;font-size:1.2em}
+
+  header.bas{text-align:center;padding-bottom:14px;border-bottom:2px solid var(--cetvel);margin-bottom:4px}
+  header.bas h1{margin:0;font-size:30px;letter-spacing:.02em;font-weight:600}
+  header.bas .alt{margin:4px 0 0;font-size:13px;color:var(--murekkep-soluk)}
+  .ozet{display:flex;border:1px solid var(--cetvel);border-top:none;background:var(--kagit2);margin-bottom:16px}
+  .ozet div{flex:1;padding:10px 4px;text-align:center;border-right:1px solid var(--cetvel)}
+  .ozet div:last-child{border-right:none}
+  .ozet b{display:block;font-size:21px;line-height:1.1}
+  .ozet span{font-size:10.5px;color:var(--murekkep-soluk)}
+  .cubuk{height:6px;background:var(--kagit2);border:1px solid var(--cetvel);margin-bottom:18px;overflow:hidden}
+  .cubuk i{display:block;height:100%;background:var(--yesil);transition:width .35s ease}
+
+  nav{display:flex;gap:5px;margin-bottom:18px}
+  nav button{flex:1;padding:9px 1px;font:inherit;font-size:12px;background:transparent;color:var(--murekkep-soluk);
+    border:1px solid var(--cetvel);cursor:pointer;border-radius:0}
+  nav button[aria-selected="true"]{background:var(--murekkep);color:var(--kagit);border-color:var(--murekkep)}
+  nav button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--kirmizi);outline-offset:2px}
+
+  h2.ay{font-size:13px;font-weight:600;color:var(--kirmizi);margin:22px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--cetvel)}
+  h2.ay:first-of-type{margin-top:0}
+
+  .hafta{border:1px solid var(--cetvel);padding:3px;margin-bottom:10px;background:var(--kagit2)}
+  .ic{border:1px solid var(--cetvel);background:var(--kagit);padding:10px 11px}
+  .hafta.bitti .ic{background:#EEF1E6}
+  .hafta.simdi{border-color:var(--kirmizi);box-shadow:0 0 0 1px var(--kirmizi)}
+  .ust{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+  .no{font-size:12px;color:var(--murekkep-soluk);min-width:52px}
+  .konu{flex:1;font-size:15px;line-height:1.35}
+  .sayfa{font-size:11px;color:var(--kirmizi);white-space:nowrap}
+  .gunler{display:flex;gap:6px;margin-top:9px}
+  .gun{flex:1;padding:8px 0;font:inherit;font-size:13px;background:transparent;border:1px solid var(--cetvel);color:var(--murekkep-soluk);cursor:pointer}
+  .gun[aria-pressed="true"]{background:var(--yesil);border-color:var(--yesil);color:#fff}
+  .link{background:none;border:none;padding:0;font:inherit;font-size:12px;color:var(--murekkep-soluk);
+    cursor:pointer;text-decoration:underline;text-underline-offset:3px;margin-top:8px}
+  textarea{width:100%;margin-top:8px;font:inherit;font-size:14px;padding:8px;background:#fff;
+    border:1px solid var(--cetvel);resize:vertical;min-height:64px;color:var(--murekkep)}
+
+  .satir{display:flex;align-items:center;gap:10px;border:1px solid var(--cetvel);border-bottom:none;padding:9px 11px;background:var(--kagit)}
+  .satir.son{border-bottom:1px solid var(--cetvel)}
+  .satir.bitti{background:#EEF1E6}
+  .kutu{width:20px;height:20px;flex:none;border:1px solid var(--murekkep-soluk);background:transparent;cursor:pointer;padding:0}
+  .kutu[aria-pressed="true"]{background:var(--yesil);border-color:var(--yesil)}
+  .kutu[aria-pressed="true"]::after{content:"✓";color:#fff;font-size:14px;display:block;line-height:18px;text-align:center}
+  .satir .metin{flex:1;font-size:14px;line-height:1.35;text-align:left}
+  .satir .kucuk{display:block;font-size:11px;color:var(--murekkep-soluk);margin-top:1px}
+  .puan{width:58px;flex:none;font:inherit;font-size:13px;padding:5px;text-align:center;background:#fff;border:1px solid var(--cetvel);color:var(--murekkep)}
+  .ac{flex:none;background:none;border:1px solid var(--cetvel);padding:4px 8px;font:inherit;font-size:11px;color:var(--murekkep-soluk);cursor:pointer}
+
+  .panel{border:1px solid var(--cetvel);border-top:none;background:#FDFBF4;padding:12px 13px}
+  .panel.son{border-bottom:1px solid var(--cetvel)}
+  .soru{margin-bottom:12px}
+  .soru p{margin:0 0 4px;font-size:14px;line-height:1.4}
+  .soru ol{margin:0;padding-left:20px}
+  .soru li{font-size:13.5px;line-height:1.5;list-style:upper-alpha}
+  .soru li.dogru{color:var(--yesil);font-weight:600}
+  .panel h4{margin:10px 0 4px;font-size:12.5px;color:var(--kirmizi);font-weight:600}
+  .panel p.ad{margin:0 0 6px;font-size:14px;line-height:1.45}
+  .panel ol.adim{margin:0 0 4px;padding-left:20px}
+  .panel ol.adim li{font-size:14px;line-height:1.5;margin-bottom:2px}
+
+.mnot{margin-top:9px;border-left:3px solid var(--kirmizi);background:#FDFBF4;padding:9px 11px}
+  .mnot ul{margin:0;padding-left:18px}
+  .mnot li{font-size:13.5px;line-height:1.55;margin-bottom:5px}
+  .mnot .uyari{margin:8px 0 0;font-size:13px;line-height:1.5;color:var(--kirmizi)}
+  .mnot .kyn{margin:6px 0 0;font-size:11.5px;color:var(--murekkep-soluk)}
+  .ipucu{margin:0 0 10px;font-size:12px;color:var(--murekkep-soluk);line-height:1.45}
+  .sno{font:inherit;font-size:12px;font-weight:700;width:24px;height:24px;padding:0;vertical-align:-5px;
+    background:transparent;border:1px solid var(--cetvel);color:var(--murekkep-soluk);cursor:pointer}
+  .sno.yanlis{background:var(--kirmizi);border-color:var(--kirmizi);color:#fff}
+  .tekrar{margin-top:14px;border:1px solid var(--kirmizi);padding:10px 11px;background:#FBF4F0}
+  .tekrar h4{margin:0 0 8px;font-size:12.5px;color:var(--kirmizi)}
+  .tsat{margin-bottom:8px;font-size:13px;line-height:1.45}
+  .tsat b{display:block}
+  .tsat span{display:block;font-size:11.5px;color:var(--murekkep-soluk)}
+  footer{margin-top:28px;padding-top:12px;border-top:1px solid var(--cetvel);
+    display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;color:var(--murekkep-soluk)}
+  footer button{font:inherit;font-size:11px;background:none;border:1px solid var(--cetvel);padding:5px 9px;color:var(--murekkep-soluk);cursor:pointer}
+  .durum{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;background:var(--murekkep);color:var(--kagit);
+    padding:7px 14px;font-size:12px;opacity:0;transition:opacity .25s;pointer-events:none}
+  .durum.gor{opacity:1}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="app"><p style="text-align:center;color:#6B5E49">Yükleniyor…</p></div>
+<div class="durum" id="durum"></div>
+
+<script>
+const VERI = {"imtihanlar": [{"no": 1, "ad": "İmtihan 1", "hafta": 4, "kapsam": "Muhtelife'nin 13 fiil sîgası", "sure": "25 dakika", "sorular": [{"s": "Emsile hangi ilimden bahseder?", "se": ["Nahiv", "Sarf", "Kırâat", "Tefsîr"], "c": 1, "k": "T01"}, {"s": "Emsile'nin musannıfı kimdir?", "se": ["Hz. Ebû Bekir (r.a.)", "Hz. Ömer (r.a.)", "Hz. Ali (r.a.)", "İmam Birgivî"], "c": 2, "k": "T02"}, {"s": "نَصَرَ hangi sîgadır?", "se": ["Fi'l-i mâzî", "Fi'l-i muzâri'", "Masdar", "Emr-i hâzır"], "c": 0, "k": "T04"}, {"s": "\"Yardım eder / yardım edecek\" manasına gelen sîga hangisidir?", "se": ["نَصَرَ", "يَنْصُرُ", "نَصْرًا", "أُنْصُرْ"], "c": 1, "k": "T05"}, {"s": "Aşağıdakilerden hangisi gelecek zaman içindir?", "se": ["لَا يَنْصُرُونَ", "لَمَّا يَنْصُرْ", "مَنْصُورٌ", "ضَرَبَ"], "c": 0, "k": "T12"}, {"s": "لَمْ يَنْصُرْ ne demektir?", "se": ["Yardım etmez", "Yardım etmedi", "Yardım etsin", "Yardım etme"], "c": 1, "k": "T09"}, {"s": "\"Elbette yardım etmez\" manasına gelen sîga hangisidir?", "se": ["لَا يَنْصُرُ", "مَا يَنْصُرُ", "لَنْ يَنْصُرَ", "لَمْ يَنْصُرْ"], "c": 2, "k": "T13"}, {"s": "أُنْصُرْ ne kelime olur?", "se": ["Nehy-i hâzır", "Emr-i gâib", "Emr-i hâzır", "Fi'l-i muzâri'"], "c": 2, "k": "T17"}, {"s": "لَا تَنْصُرْ ile لَا يَنْصُرْ arasındaki fark nedir?", "se": ["Biri emir, biri nehiydir", "Biri hâzıra, biri gâibe hitaptır", "Biri mâzî, biri muzâri'dir", "Biri isim, biri fiildir"], "c": 1, "k": "T19"}, {"s": "\"Yardım etmedim\" manasına gelen kelime hangisidir?", "se": ["مَا أَنْصُرُ", "لَا أَنْصُرُ", "لِأُنْصَرْ", "لَمْ أَنْصُرْ"], "c": 3, "k": "T09"}]}, {"no": 2, "ad": "İmtihan 2", "hafta": 8, "kapsam": "24 sîganın tamamı ve taksîmât", "sure": "30 dakika", "sorular": [{"s": "Emsile kaça ayrılır?", "se": ["İkiye: muhtelife ve muttaride", "Üçe", "İkiye: ma'lûm ve mechûl", "Dörde"], "c": 0, "k": "T03"}, {"s": "Emsile-i muhtelife kaç sîgadır?", "se": ["14", "24", "11", "13"], "c": 1, "k": "T03"}, {"s": "Bu sîgaların kaçı fiil, kaçı isimdir?", "se": ["11 fiil, 13 isim", "12 fiil, 12 isim", "13 fiil, 11 isim", "14 fiil, 10 isim"], "c": 2, "k": "T03"}, {"s": "Hangisi ism-i tafdîldir?", "se": ["كَاتِبٌ", "أَكْتَبُ", "أَنْصُرُ", "نَصَّارٌ"], "c": 1, "k": "T26"}, {"s": "Hangisi ism-i tasgīrdir?", "se": ["خَرْجِيٌّ", "قَاتِلٌ", "نُصَيْرٌ", "نَصَّارٌ"], "c": 2, "k": "T23"}, {"s": "Hangisi işin çok yapıldığını anlatır?", "se": ["Mübâlağa ism-i fâil", "İsm-i mensûb", "Masdar", "Emr-i hâzır"], "c": 0, "k": "T25"}, {"s": "İşin kaç kere yapıldığını hangi sîga ifade eder?", "se": ["İsm-i âlet", "Masdar binâ-i nev'", "İsm-i tafdîl", "Masdar binâ-i merre"], "c": 3, "k": "T22"}, {"s": "Aşağıdaki eşleştirmelerden hangisi yanlıştır?", "se": ["مَعْلُومٌ — ism-i mef'ûl", "مَكْتَبٌ — ism-i âlet", "فَتْحًا — masdar", "شَاكِرٌ — ism-i fâil"], "c": 1, "k": "T20"}, {"s": "Hangisi inşâî sîgalardan değildir?", "se": ["Emr-i gâib", "Nehy-i hâzır", "Cahd-ı mutlak", "Fi'l-i taaccüb-i evvel"], "c": 2, "k": "T28"}, {"s": "Hangisi câmid isimlerdendir?", "se": ["İsm-i fâil", "İsm-i mef'ûl", "Masdar", "İsm-i tafdîl"], "c": 2, "k": "T28"}, {"s": "دَخْلًا için hangisi doğru olamaz?", "se": ["Müfreddir", "Fiildir", "İsimdir", "Masdardır"], "c": 1, "k": "T06"}, {"s": "دَخَلَ \"girdi\", خَرَجَ \"çıktı\" olduğuna göre \"giren\" ve \"çıkan\" hangileridir?", "se": ["دَخْلًا — خَرَجُوا", "اُدْخُلْ — اُخْرُجْ", "دَاخِلٌ — خَارِجٌ", "لَمْ يَدْخُلْ — لَمْ يَخْرُجْ"], "c": 2, "k": "T07"}]}, {"no": 3, "ad": "İmtihan 3", "hafta": 13, "kapsam": "Mâzî ma'lûm ve mechûl tasrîfi", "sure": "25 dakika", "sorular": [{"s": "نَصَرَ'nin gâibe (müennes) müfredi nedir?", "se": ["نَصَرَتْ", "نَصَرَا", "نَصَرْنَ", "نَصَرْتِ"], "c": 0, "k": "T29"}, {"s": "نَصَرُوا kimi anlatır?", "se": ["İki er", "Cemî erler", "Cemî avretler", "Bir avret"], "c": 1, "k": "T29"}, {"s": "كَتَبَ \"yazdı\" olduğuna göre \"bir kadın yazdı\" hangisidir?", "se": ["كَتَبَ", "كَتَبْتِ", "كَتَبْتَ", "كَتَبَتْ"], "c": 3, "k": "T04"}, {"s": "Hangisi müennes değildir?", "se": ["نَظَرْتَ", "نَظَرْنَ", "نَظَرْتِ", "تَنْظُرِينَ"], "c": 0, "k": "T29"}, {"s": "نَصَرْتُمَا hangi sîgadır?", "se": ["Muhâtab tesniye", "Gâib cemî", "Mütekellim vahde", "Gâibe müfred"], "c": 0, "k": "T29"}, {"s": "نُصِرَ ne demektir?", "se": ["Yardım etti", "Yardım olundu", "Yardım etmedi", "Yardım et"], "c": 1, "k": "T30"}, {"s": "Hangisi mechûl sîgasında değildir?", "se": ["يُنْصَرُ", "مَا يَنْصُرُ", "نُصِرَ", "لِتُنْصَرْ"], "c": 1, "k": "T30"}, {"s": "Aşağıdakilerin hangisinde ma'lûm–mechûl eşleşmesi yanlıştır?", "se": ["كُتِبَ — اُكْتُبْ", "نَصَرَ — نُصِرَ", "نَصَرُوا — نُصِرُوا", "قَتَلَ — قُتِلَ"], "c": 0, "k": "T30"}, {"s": "\"Biz yardım ettik\" hangisidir?", "se": ["نَصَرْنَ", "نَصَرْنَا", "نَصَرْتُ", "نَصَرُوا"], "c": 1, "k": "T04"}, {"s": "Muttaridede her sîganın tasrîfi kaç hânedir?", "se": ["11", "13", "14", "24"], "c": 2, "k": "T29"}]}, {"no": 4, "ad": "İmtihan 4", "hafta": 17, "kapsam": "Muzâri', masdar, ism-i fâil, ism-i mef'ûl", "sure": "25 dakika", "sorular": [{"s": "Hangisi fi'l-i muzâri' değildir?", "se": ["يَكْتُبْنَ", "تَكْتُبُ", "تَكْتُبَانِ", "كَاتِبٌ"], "c": 3, "k": "T05"}, {"s": "يَنْصُرُونَ kelimesinin manası nedir?", "se": ["Yardım ederler", "Yardım yaptılar", "Yardım yaptı", "Yardım etmezler"], "c": 0, "k": "T05"}, {"s": "\"Biz yardım ederiz\" cümlesinin Arapça karşılığı nedir?", "se": ["أَنْصُرُ", "نَنْصُرُ", "لَا تَنْصُرُ", "نَصَرْنَا"], "c": 1, "k": "T05"}, {"s": "Hangisi ism-i fâildir?", "se": ["يَذْهَبُ", "فَاتِحٌ", "ضَرَبَ", "مَنْصُورٌ"], "c": 1, "k": "T07"}, {"s": "قَتَلَ \"öldürdü\" olduğuna göre \"öldüren\" ve \"öldürülen\" hangileridir?", "se": ["نَاصِرٌ — مَنْصُورٌ", "قَاتِلُونَ — قَاتِلَاتٌ", "قُتِلَ — اُقْتُلْ", "قَاتِلٌ — مَقْتُولٌ"], "c": 3, "k": "T08"}, {"s": "\"Yardım olunmuş iki er\" hangisidir?", "se": ["نَصَرُوا", "نَاصِرَانِ", "مَنْصُورَانِ", "مَنْصُورُونَ"], "c": 2, "k": "T08"}, {"s": "نَاصِرُونَ için hangisi yanlıştır?", "se": ["Cemîdir", "Müennestir", "İsm-i fâildir", "Müzekkerdir"], "c": 1, "k": "T07"}, {"s": "Emsile kitabında ism-i fâilin kaç sîgası vardır?", "se": ["10", "7", "6", "8"], "c": 0, "k": "T07"}, {"s": "مَنْصُورٌ hangi sîgadır?", "se": ["İsm-i fâil", "İsm-i mef'ûl", "Masdar", "İsm-i âlet"], "c": 1, "k": "T08"}, {"s": "نَصْرًا için hangisi doğrudur?", "se": ["Fiildir", "Masdardır", "İsm-i fâildir", "Emirdir"], "c": 1, "k": "T06"}]}, {"no": 5, "ad": "İmtihan 5", "hafta": 22, "kapsam": "Beş menfî sîga", "sure": "25 dakika", "sorular": [{"s": "Hangisi mâzîyi nefyeder?", "se": ["مَا يَنْصُرُ", "لَا يَنْصُرُ", "لَمْ يَنْصُرْ", "لَنْ يَنْصُرَ"], "c": 2, "k": "T09"}, {"s": "لَمَّا يَنْصُرْ ile لَمْ يَنْصُرْ arasındaki fark nedir?", "se": ["Biri gelecek, biri geçmiş zamandır", "لَمَّا'da \"henüz\" manası vardır", "Biri isim, biri fiildir", "Aralarında fark yoktur"], "c": 1, "k": "T10"}, {"s": "مَا يَنْصُرُ hangi zamanı nefyeder?", "se": ["Geçmiş zamanı", "Şimdiki hâli", "Gelecek zamanı", "Her üçünü"], "c": 1, "k": "T11"}, {"s": "\"Yardım etmezler, cemî gâib avretler, şimdiki hâlde\" manasındaki sîga hangisidir?", "se": ["لَمْ يَنْصُرُوا", "مَا يَنْصُرْنَ", "مَا تَنْصُرُونَ", "لَا يَنْصُرُونَ"], "c": 1, "k": "T11"}, {"s": "كَتَبْتُ \"ben yazdım\" ise \"ben yazmadım\" hangisidir?", "se": ["مَا أَكْتُبُ", "لَمْ نَكْتُبْ", "لَمْ أَكْتُبْ", "لَمْ أُكْتَبْ"], "c": 2, "k": "T09"}, {"s": "لَنْ نَنْصُرَ için hangisi yanlıştır?", "se": ["Geçmiş zaman içindir", "Gelecek zaman içindir", "Mütekellimdir", "Ma'lûmdur"], "c": 0, "k": "T13"}, {"s": "Hangisi gelecek zaman ifade eder?", "se": ["أَنْصَرُ", "نَصَرْتُ", "لَمَّا يَنْصُرْ", "لَا أَنْصُرُ"], "c": 3, "k": "T12"}, {"s": "لَنْ edatının لَا'dan farkı nedir?", "se": ["Zaman farkı vardır", "Manayı te'kîd eder (kuvvetlendirir)", "Mana farkı yoktur", "İsmin başına gelir"], "c": 1, "k": "T13"}, {"s": "Beş menfî sîgadan kaçı muzâri'nin başına gelir?", "se": ["İkisi", "Üçü", "Dördü", "Beşi"], "c": 3, "k": "T14"}, {"s": "لَمْ ve لَمَّا dahil oldukları muzâri'yi ne yapar?", "se": ["Geleceğe çevirir", "Mâzîye çevirip nefyeder", "Emir yapar", "İsim yapar"], "c": 1, "k": "T09"}]}, {"no": 6, "ad": "İmtihan 6", "hafta": 26, "kapsam": "Te'kîd-i nefy-i istikbâl, emir ve nehiy (gâib)", "sure": "25 dakika", "sorular": [{"s": "لِيَنْصُرْ ne demektir?", "se": ["Yardım etsin", "Yardım et", "Yardım etmesin", "Yardım etmez"], "c": 0, "k": "T15"}, {"s": "لِتَنْصُرْ ne kelime olur?", "se": ["Nehy-i gâib, müfred müzekker", "Emr-i hâzır, müfred müennes", "Emr-i gâib, müfred müennes", "Emr-i hâzır, mechûl"], "c": 2, "k": "T15"}, {"s": "Nefiy ile nehiy arasındaki fark nedir?", "se": ["Nefiy haber verir, nehiy talep eder", "İkisi aynıdır", "Nefiy emirdir", "Nehiy geçmiş zaman içindir"], "c": 0, "k": "T19"}, {"s": "لَا يَنْصُرْ ile لَا يَنْصُرُ arasındaki fark nedir?", "se": ["Manaları aynıdır", "Biri nehiy, biri nefiydir", "Biri isimdir", "Biri mâzîdir"], "c": 1, "k": "T19"}, {"s": "\"Yardım etsinler\" (cemî gâib) hangisidir?", "se": ["لِيَنْصُرُوا", "اُنْصُرُوا", "لَا يَنْصُرُوا", "يَنْصُرُونَ"], "c": 0, "k": "T15"}, {"s": "Emr-i gâib kime emirdir?", "se": ["Karşımızdaki kişiye", "Hazırda olmayana, vasıta ile", "Kendimize", "Hiç kimseye"], "c": 1, "k": "T15"}, {"s": "لَنْ تَنَالُوا الْبِرَّ âyetindeki لَنْ hangi sîgayı meydana getirir?", "se": ["Cahd-ı mutlak", "Nefy-i hâl", "Te'kîd-i nefy-i istikbâl", "Nehy-i gâib"], "c": 2, "k": "T13"}, {"s": "Nehiydeki لَا ile nefiydeki لَا arasında ne fark vardır?", "se": ["Nehiydeki âmildir, nefiydeki değildir", "Fark yoktur", "Nefiydeki âmildir", "İkisi de isimdir"], "c": 0, "k": "T19"}, {"s": "Emr-i gâibin başındaki لِ harfine ne denir?", "se": ["Lâm-ı ta'rîf", "Lâm-ı emir", "Lâm-ı cer", "Lâm-ı te'kîd"], "c": 1, "k": "T15"}, {"s": "İnşâî sîgalardan \"terkini talep\" olanlar hangileridir?", "se": ["Emr-i gâib ve emr-i hâzır", "Nehy-i gâib ve nehy-i hâzır", "Taaccüb-i evvel ve sânî", "Mâzî ve muzâri'"], "c": 1, "k": "T28"}]}, {"no": 7, "ad": "İmtihan 7", "hafta": 30, "kapsam": "Emir/nehiy (hâzır), câmid ve müştak isimler", "sure": "25 dakika", "sorular": [{"s": "اُنْصُرُوا ne kelime olur?", "se": ["Nehy-i hâzır", "Emr-i gâib", "Emr-i hâzır", "Fi'l-i muzâri'"], "c": 2, "k": "T17"}, {"s": "لَا تَنْصُرِي'nin manası nedir?", "se": ["Yardım etmesin cemî avretler", "Yardım olunsun bir avret", "Yardım olunmasın bir avret", "Yardım etme sen, bir avret"], "c": 3, "k": "T18"}, {"s": "خَرَجَ \"çıktı\" olduğuna göre \"sen çık\" hangisidir?", "se": ["لَا تَخْرُجْ", "لَمْ تَخْرُجْ", "اُخْرُجْ", "يَخْرُجُ"], "c": 2, "k": "T17"}, {"s": "شَكَرَ \"şükretti\" olduğuna göre \"siz şükredin\" hangisidir?", "se": ["اُشْكُرْ", "لِيَشْكُرُوا", "اُشْكُرُوا", "لَا تَشْكُرُوا"], "c": 2, "k": "T17"}, {"s": "كَتَبَ'nin nehy-i hâzır müfred müennesi nasıl gelir?", "se": ["لَا تَكْتُبْ", "لَا يَكْتُبْ", "اُكْتُبِي", "لَا تَكْتُبِي"], "c": 3, "k": "T18"}, {"s": "مَنْصَرٌ hangi manalara gelir?", "se": ["Yalnız âlet", "Zaman, mekân ve masdar-ı mîmî", "Yalnız masdar", "İsm-i fâil"], "c": 1, "k": "T20"}, {"s": "İsm-i âletin vezni nedir?", "se": ["مَفْعَلٌ", "مِفْعَلٌ", "فَعَّالٌ", "أَفْعَلُ"], "c": 1, "k": "T21"}, {"s": "نَصْرَةً ile نِصْرَةً arasındaki fark nedir?", "se": ["Biri bir kere, biri bir türlü yapmaktır", "Biri isim, biri fiildir", "Fark yoktur", "Biri mechûldür"], "c": 0, "k": "T22"}, {"s": "نَصْرِيٌّ hangi sîgadır?", "se": ["İsm-i tasgīr", "İsm-i mensûb", "Mübâlağa ism-i fâil", "İsm-i tafdîl"], "c": 1, "k": "T24"}, {"s": "Allah'ın ve peygamberlerin isimlerinde hangi sîga cârî olmaz?", "se": ["İsm-i fâil", "İsm-i tasgīr", "İsm-i tafdîl", "Masdar"], "c": 1, "k": "T23"}]}, {"no": 8, "ad": "İmtihan 8", "hafta": 35, "kapsam": "Yeni kökler ve Kur'an tarama", "sure": "25 dakika", "sorular": [{"s": "Nasr sûresindeki نَصْرُ kelimesi hangi sîgadır?", "se": ["Fi'l-i mâzî", "Masdar", "İsm-i fâil", "Emr-i hâzır"], "c": 1, "k": "T31"}, {"s": "يَدْخُلُونَ hangi sîgadır?", "se": ["Mâzî cemî", "Muzâri' cemî gâib", "Emr-i hâzır", "İsm-i mef'ûl"], "c": 1, "k": "T05"}, {"s": "كُتِبَ عَلَيْكُمُ الصِّيَامُ'daki كُتِبَ hangi sîgadır?", "se": ["Mâzî ma'lûm", "Mâzî mechûl", "Fi'l-i muzâri'", "Masdar"], "c": 1, "k": "T30"}, {"s": "إِنَّا فَتَحْنَا'daki فَتَحْنَا kimi anlatır?", "se": ["Gâib cemî", "Muhâtab cemî", "Mütekellim maa'l-gayr", "Gâibe müfred"], "c": 2, "k": "T29"}, {"s": "لَمْ يَلِدْ وَلَمْ يُولَدْ'de sırasıyla hangi sîgalar vardır?", "se": ["İkisi de ma'lûm", "Cahd-ı mutlak ma'lûm ve mechûl", "İkisi de mechûl", "Nefy-i hâl ve nehiy"], "c": 1, "k": "T09"}, {"s": "اقْرَأْ hangi sîgadır?", "se": ["Fi'l-i mâzî", "Fi'l-i muzâri'", "Emr-i hâzır", "Nehy-i hâzır"], "c": 2, "k": "T17"}, {"s": "تَوَّابًا hangi sîgadır?", "se": ["İsm-i fâil", "Mübâlağa ism-i fâil", "İsm-i mef'ûl", "Masdar"], "c": 1, "k": "T25"}, {"s": "مَا أَكْفَرَهُ hangi sîgadır?", "se": ["Nefy-i hâl", "Fi'l-i taaccüb-i evvel", "Cahd-ı mutlak", "İsm-i tafdîl"], "c": 1, "k": "T27"}, {"s": "فَلْيَعْبُدُوا رَبَّ هَٰذَا الْبَيْتِ'deki فَلْيَعْبُدُوا hangi sîgadır?", "se": ["Emr-i hâzır", "Emr-i gâib", "Fi'l-i muzâri'", "Nehy-i gâib"], "c": 1, "k": "T15"}, {"s": "فِي أَحْسَنِ تَقْوِيمٍ'deki أَحْسَنِ hangi sîgadır?", "se": ["Mübâlağa ism-i fâil", "İsm-i tafdîl", "İsm-i fâil", "İsm-i mensûb"], "c": 1, "k": "T26"}]}, {"no": 9, "ad": "Genel İmtihan", "hafta": 38, "kapsam": "Kitabın tamamı", "sure": "45 dakika", "sorular": [{"s": "Emsile hangi ilimden bahseder?", "se": ["Nahiv", "Sarf", "Kırâat", "Tefsîr"], "c": 1, "k": "T01"}, {"s": "Emsile-i muttaride kaç sîgadır?", "se": ["11", "13", "14", "24"], "c": 2, "k": "T29"}, {"s": "نَصَرَ kelimesinin emr-i hâzır cemî müzekkeri nedir?", "se": ["نَصَرُوا", "لَا تَنْصُرُوا", "اُنْصُرُوا", "اُنْصُرْنَ"], "c": 2, "k": "T17"}, {"s": "مَنَاصِرُ kelimesi için hangisi söylenebilir?", "se": ["Tesniyedir", "Mechûldür", "İsm-i tafdîldir", "Cemîdir"], "c": 3, "k": "T29"}, {"s": "Hangisi cemî değildir?", "se": ["فَتْحَةً", "فَتَحْنَ", "فَتَحُوا", "فُتِحُوا"], "c": 0, "k": "T29"}, {"s": "Hangisi tesniyedir?", "se": ["نَصَرْنَ", "مَنْصُورَاتٌ", "مَنْصُورَانِ", "يَنْصُرُونَ"], "c": 2, "k": "T29"}, {"s": "Aşağıdaki kelime–mana eşleştirmelerinden hangisi doğrudur?", "se": ["نَاصِرٌ — Yardım olunmuş", "لَا تَنْصُرْ — Yardım etmedi", "نَصَرْتُ — Yardım et", "مَنْصُورُونَ — Yardım olunmuşlar"], "c": 3, "k": "T08"}, {"s": "Aşağıdakilerin hangisinde biri müzekker biri müennes değildir?", "se": ["مَنْصُورُونَ — نَاصِرَانِ", "نَاصِرَةٌ — مَنْصُورٌ", "يَنْصُرُ — كَتَبَتْ", "نَصَرَتْ — نَاصِرٌ"], "c": 0, "k": "T29"}, {"s": "لَمْ يَنْصُرْ'ün cemî müennes muhâtabası ne gelir?", "se": ["لَمْ يَنْصُرُوا", "لَمْ تَنْصُرْنَ", "لَمْ يَنْصُرْنَ", "لَمْ تَنْصُرُوا"], "c": 1, "k": "T09"}, {"s": "\"Yarın okula gideceğim\" cümlesinde \"gideceğim\" hangi sîga ile ifade edilir?", "se": ["Emr-i hâzır", "Fi'l-i muzâri' nefy-i hâl", "Fi'l-i muzâri' cahd-ı mutlak", "Fi'l-i muzâri'"], "c": 3, "k": "T05"}, {"s": "Hangisi mübâlağa ism-i fâil sîgasıdır?", "se": ["نَصَّارٌ", "نَصْرِيٌّ", "أَنْصَرُ", "نُصَيْرٌ"], "c": 0, "k": "T25"}, {"s": "جَلَسَ \"oturdu\" manasınadır. \"Ben oturdum\" için hangi sîga kullanılır?", "se": ["جَلَسُوا", "جَلَسْنَ", "جَلَسَتْ", "جَلَسْتُ"], "c": 3, "k": "T04"}, {"s": "Aşağıdakilerden hangisi mâzî sîgası ile gelmemiştir?", "se": ["نَصَرَتْ", "نَصَرْتَ", "نَصْرًا", "نَصَرْنَ"], "c": 2, "k": "T06"}, {"s": "مَنْصُورُونَ kelimesinin manası nedir?", "se": ["Yardım olunmuş cemî erler", "Yardım olunmuş cemî avretler", "Yardım edici cemî erler", "Yardım edecek zaman"], "c": 0, "k": "T08"}, {"s": "Hangisi mechûl sîgasında değildir?", "se": ["يُنْصَرُ", "مَا يَنْصُرُ", "نُصِرَ", "لِتُنْصَرْ"], "c": 1, "k": "T30"}, {"s": "İşin kaç kere yapıldığını hangi sîga ifade eder?", "se": ["İsm-i âlet", "Masdar binâ-i nev'", "İsm-i tafdîl", "Masdar binâ-i merre"], "c": 3, "k": "T22"}, {"s": "لَا تَنْصُرِي'nin manası nedir?", "se": ["Yardım etmesin cemî avretler", "Yardım olunsun bir avret", "Yardım olunmasın bir avret", "Yardım etme sen, bir avret"], "c": 3, "k": "T18"}, {"s": "مَا أَنْصَرَهُ hangi sîgadır?", "se": ["Nefy-i hâl", "Fi'l-i taaccüb-i evvel", "Fi'l-i taaccüb-i sânî", "Cahd-ı mutlak"], "c": 1, "k": "T27"}, {"s": "Sarf ilminin gayesi nedir?", "se": ["Kelimeleri ezberlemek", "Hatadan korunmak", "Şiir yazmak", "Cümle kurmak"], "c": 1, "k": "T01"}, {"s": "Emsile'den sonra hangi kitap okunur?", "se": ["Avâmil", "Binâ", "İzhâr", "Kâfiye"], "c": 1, "k": "T03"}]}], "oyunlar": [{"no": 1, "ad": "Sîga Sandalyesi", "sure": "10 dk", "hazirlik": "Sınıftaki sandalyelere birer sîga kâğıdı yapıştırılır. Başlangıçta 3–5 sandalye yeter; muttarideye geçilince 14'e çıkarılır.", "nasil": ["Çocuklar ayakta, sandalyelerin çevresinde dolaşır.", "Hoca bir sîganın manasını söyler: \"Yardım etti!\"", "Herkes doğru sandalyeye koşup oturur.", "Yanlış sandalyeye oturan bir tur bekler, doğru oturan bir puan alır."], "varyasyon": "İleri seviye: hoca manayı değil, tasrîf hânesini söyler — \"cemî gâib müennes!\"", "nezaman": "Yeni sîga öğrenilen günün ertesinde; salı ve perşembe uygundur."}, {"no": 2, "ad": "Tasrîf Merdiveni", "sure": "12 dk", "hazirlik": "Tahtaya alt alta 14 basamak çizilir; en üste \"nihâyet\" yazılır.", "nasil": ["Çocuk birinci basamaktan başlar: نَصَرَ.", "Doğru söylerse bir basamak çıkar; sıradaki sîgayı söyler.", "Şaşırırsa en alta döner ve sıra arkadaşına geçer.", "Merdiveni ilk bitiren haftanın tasrîf ustası olur."], "varyasyon": "İki takım, iki merdiven; yarış hâlinde oynanır.", "nezaman": "Muttaride başladıktan sonra (9. haftadan itibaren) her hafta."}, {"no": 3, "ad": "Kalıp Kartları", "sure": "10 dk", "hazirlik": "A5 karton. Ön yüzde Arapça sîga, arka yüzde Türkçe manası ve adı. Her hafta yeni kart eklenir; kartlar Tekrar Kutusu'nda saklanır.", "nasil": ["Hoca kartın Arapça yüzünü gösterir, çocuk manasını söyler.", "Sonra ters çevrilir: mana söylenir, çocuk Arapçasını yazar.", "Süre tutulur: 30 saniyede kaç doğru?"], "varyasyon": "Eşleştirme sürümü: kartlar ikiye bölünür, Arapça ve Türkçe parçalar karıştırılıp eşleştirilir.", "nezaman": "Her cuma ısınma turunda; ayrıca aralıklı tekrar günlerinde."}, {"no": 4, "ad": "Sîga Avı", "sure": "15 dk", "hazirlik": "Kısa bir sûre veya âyet büyük puntoyla basılır, herkese bir nüsha dağıtılır.", "nasil": ["\"Bu âyette bildiğimiz sîgalardan kaç tane var?\"", "Çocuklar buldukları kelimeyi kalemle yuvarlak içine alır.", "Sırayla okunur: kelime, sîganın adı, manası.", "Doğru her tespit bir puan; sîganın adını da söyleyen iki puan alır."], "varyasyon": "Ezberden avlanma: mushafa bakmadan, ezberindeki sûreden sîga çıkarma.", "nezaman": "Her çarşamba, Kur'an gününün ana etkinliği."}, {"no": 5, "ad": "Kim Yardım Etti?", "sure": "10 dk", "hazirlik": "Hazırlık gerekmez.", "nasil": ["Hoca bir muttaride sîgası söyler: نَصَرَتَا.", "Çocuklar sahneyi canlandırır: kaç kişi? erkek mi kadın mı? kim yardım etti?", "İki kız öne çıkıp birbirine yardım ederse doğru; sınıf onaylar.", "Yanlış canlandırmada doğru olan gösterilir, üzerinde konuşulur."], "varyasyon": "Tersine oyun: hoca sahneyi canlandırır, çocuklar sîgayı söyler.", "nezaman": "Müfred–tesniye–cemî ve müzekker–müennes ayrımının yeni işlendiği haftalarda (9–13)."}, {"no": 6, "ad": "Yanlış Avcısı", "sure": "8 dk", "hazirlik": "Hoca önceden 5–6 kasıtlı hata belirler.", "nasil": ["Hoca tasrîfi yüksek sesle okur, arada kasten yanlış okur: نَصِرَ, يُنْصُرُ gibi.", "Hatayı ilk yakalayan elini kaldırır ve doğrusunu söyler.", "Doğru düzelten puan alır; boş yere el kaldıran bir puan kaybeder."], "varyasyon": "Yazılı sürüm: tahtaya hatalı bir tasrîf yazılır, çocuklar hataları defterine listeler.", "nezaman": "Cuma ısınmasında; ezberin sağlamlığını ölçer."}, {"no": 7, "ad": "Zaman Makinesi", "sure": "10 dk", "hazirlik": "Üç kutu veya sınıfın üç köşesi: GEÇMİŞ, ŞİMDİ, GELECEK.", "nasil": ["Sîga kartları karıştırılıp dağıtılır.", "Her çocuk kartını okur ve doğru kutuya atar.", "Tartışmalı kartlar (مَا يَنْصُرُ ve لَا يَنْصُرُ gibi) sınıfça konuşulur."], "varyasyon": "Dördüncü kutu eklenir: ZAMANSIZ (isimler buraya gider).", "nezaman": "Menfî sîgaların işlendiği 18–22. haftalarda vazgeçilmezdir."}, {"no": 8, "ad": "Ma'lûm–Mechûl Düellosu", "sure": "12 dk", "hazirlik": "Sınıf iki takıma ayrılır.", "nasil": ["Birinci takım bir ma'lûm sîga söyler: نَصَرْتُمْ.", "İkinci takımın 10 saniye içinde mechûlünü bulması gerekir: نُصِرْتُمْ.", "Bulursa sıra onlara geçer, bulamazsa puan karşı takıma yazılır.", "Beş puana ilk ulaşan kazanır."], "varyasyon": "Mechûlü olmayan sîgalar (masdar gibi) tuzak olarak atılır; \"bunun mechûlü yok!\" diyen iki puan alır.", "nezaman": "12. haftadan itibaren, mechûl işlenen her ünitede."}, {"no": 9, "ad": "Saf Tasrîfi", "sure": "8 dk", "hazirlik": "Hazırlık gerekmez.", "nasil": ["Çocuklar tek sıra dizilir.", "Birinci tasrîfin ilk sîgasını söyler, ikinci ikinciyi, böyle devam eder.", "Zincir kopmadan 14 hâne tamamlanmalıdır.", "Kopan yerden yeniden başlanır; her turda hız artırılır."], "varyasyon": "Ters saf: tasrîf sondan başa doğru söylenir. Zordur, ezberi çok sağlamlaştırır.", "nezaman": "Her salı, ezber gününün kapanışında."}, {"no": 10, "ad": "Kök Değirmeni", "sure": "15 dk", "hazirlik": "Kartondan bir çark; üzerinde 24 sîganın adı. Ayrıca kök kartları: كَتَبَ، فَتَحَ، خَرَجَ، دَخَلَ، عَلِمَ.", "nasil": ["Çocuk bir kök kartı çeker ve çarkı çevirir.", "Çıkan sîgayı, çektiği kökten türetip tahtaya yazar.", "Sınıf kontrol eder; doğruysa puan alır."], "varyasyon": "Süreli turnuva: iki dakikada en çok doğru türeten kazanır.", "nezaman": "8. ay (32–35. haftalar), yeni köklere geçildiğinde."}, {"no": 11, "ad": "Emsile Tombalası", "sure": "12 dk", "hazirlik": "Her çocuğa bir karton: üzerinde rastgele dizilmiş 9 (ileride 24) sîga. Kapatmak için fasulye veya pul.", "nasil": ["Hoca bir sîganın manasını veya adını okur.", "Çocuk kartonunda karşılığını bulup üstünü kapatır.", "Bir sırayı tamamlayan \"sıra!\", tamamını kapatan \"Emsile!\" diye seslenir.", "Kazanan kartonunu okuyarak doğrular."], "varyasyon": "Kur'an sürümü: hoca âyet okur, çocuk âyetteki sîgayı kapatır.", "nezaman": "Ay sonlarında, toplu tekrar haftalarında."}, {"no": 12, "ad": "Hafta Şampiyonu", "sure": "5 dk", "hazirlik": "Panoda haftalık puan çizelgesi.", "nasil": ["Hafta boyunca bütün oyunlardan alınan puanlar toplanır.", "Cuma dersinin sonunda toplam okunur.", "Şampiyona küçük bir ödül: haftaya ilk sırayı seçme hakkı, tahtaya yazma hakkı gibi.", "Puanı en çok artan çocuk da ayrıca anılır — mutlak birinci kadar önemlidir."], "varyasyon": "Takım sürümü: sınıf iki sabit takıma ayrılır, aylık şampiyon ilan edilir.", "nezaman": "Her cuma, dersin kapanışında."}], "konular": {"T01": {"ad": "Sarf ilminin tarifi, mevzuu, gayesi", "tekrar": "Ana Plan Ek-1 ve Emsilenin_musannıfı.doc · Hafta 1 Pazartesi"}, "T02": {"ad": "Emsile'nin musannıfı ve kitabın adı", "tekrar": "Emsilenin_musannıfı.doc · Hafta 1 Pazartesi"}, "T03": {"ad": "Muhtelife–muttaride ayrımı, 24 sîganın yapısı", "tekrar": "Kitap s.1–2 · Hafta 8 taksîmât dersi"}, "T04": {"ad": "Fi'l-i mâzî", "tekrar": "Kitap s.2–3 · Hafta 1 ve 10"}, "T05": {"ad": "Fi'l-i muzâri'", "tekrar": "Kitap s.3–4 · Hafta 1 ve 14"}, "T06": {"ad": "Masdar", "tekrar": "Kitap s.5 · Hafta 1 ve 16"}, "T07": {"ad": "İsm-i fâil", "tekrar": "Kitap s.5 · Hafta 2 ve 16"}, "T08": {"ad": "İsm-i mef'ûl", "tekrar": "Kitap s.5 · Hafta 2 ve 16"}, "T09": {"ad": "Cahd-ı mutlak (لَمْ)", "tekrar": "Kitap s.6 · Hafta 3 ve 18"}, "T10": {"ad": "Cahd-ı müstağrak (لَمَّا)", "tekrar": "Kitap s.7–8 · Hafta 3 ve 19"}, "T11": {"ad": "Nefy-i hâl (مَا)", "tekrar": "Kitap s.9–10 · Hafta 3 ve 20"}, "T12": {"ad": "Nefy-i istikbâl (لَا)", "tekrar": "Kitap s.10–11 · Hafta 3 ve 21"}, "T13": {"ad": "Te'kîd-i nefy-i istikbâl (لَنْ)", "tekrar": "Kitap s.12–13 · Hafta 3 ve 23"}, "T14": {"ad": "Beş menfî sîganın mukayesesi", "tekrar": "Hafta 22 zaman tablosu · Oyun 7 Zaman Makinesi"}, "T15": {"ad": "Emr-i gâib", "tekrar": "Kitap s.14 · Hafta 4 ve 24"}, "T16": {"ad": "Nehy-i gâib", "tekrar": "Kitap s.15 · Hafta 4 ve 25"}, "T17": {"ad": "Emr-i hâzır", "tekrar": "Kitap s.16 · Hafta 4 ve 27"}, "T18": {"ad": "Nehy-i hâzır", "tekrar": "Kitap s.17 · Hafta 4 ve 28"}, "T19": {"ad": "Nefiy ile nehiy arasındaki fark", "tekrar": "Emsilenin_musannıfı.doc 'Nefî ile nehîy' bendi · Hafta 25"}, "T20": {"ad": "İsm-i zamân, mekân ve masdar-ı mîmî", "tekrar": "Kitap s.18 · Hafta 5 ve 29"}, "T21": {"ad": "İsm-i âlet", "tekrar": "Kitap s.18 · Hafta 5 ve 29"}, "T22": {"ad": "Masdar binâ-i merre ve binâ-i nev'", "tekrar": "Kitap s.18 · Hafta 6 ve 29"}, "T23": {"ad": "İsm-i tasgīr", "tekrar": "Kitap s.18 · Hafta 6 ve 29 · musannıf notlarında vezinler"}, "T24": {"ad": "İsm-i mensûb", "tekrar": "Kitap s.19 · Hafta 6 ve 30"}, "T25": {"ad": "Mübâlağa ism-i fâil", "tekrar": "Kitap s.19 · Hafta 7 ve 30"}, "T26": {"ad": "İsm-i tafdîl", "tekrar": "Kitap s.19 · Hafta 7 ve 30"}, "T27": {"ad": "Fi'l-i taaccüb-i evvel ve sânî", "tekrar": "Kitap s.20–21 · Hafta 7 ve 31"}, "T28": {"ad": "Taksîmât: ihbârî/inşâî, müştak/câmid", "tekrar": "Sarf_-_Emsile_Taksimatı.pdf · Hafta 8"}, "T29": {"ad": "Muttaridenin 14 hânesi (şahıs, sayı, cinsiyet)", "tekrar": "Ana Plan Ek-2 boş kalıp · Hafta 9 · Oyun 5"}, "T30": {"ad": "Ma'lûm–mechûl ayrımı", "tekrar": "Kitap s.3–4 · Hafta 12–13 · Oyun 8 Düello"}, "T31": {"ad": "Kur'an'da sîga tanıma", "tekrar": "Sîga Avı Defteri · Hafta 35 · Oyun 4"}}, "haftaNotlari": {"1": {"b": ["Sarfın tarifi: Arapça kelimelerin yapısı kendisiyle bilinen ilimdir. Mevzuu kelime, gayesi yazarken ve okurken hatadan korunmak, hükmü farz-ı kifâye.", "Emsile \"misaller\" demektir; mufâale bâbından ikinci masdardır. Musannıfı Hz. Ali (r.a.).", "Madde = harfler (ن ص ر), heyet = kalıp ve hareke. Sarf heyeti değiştirir, madde sabit kalır.", "Niçin nasara ile başlandı: (1) musannıf Allah'tan yardım beklediği için, (2) yardımı sevdiği için, (3) bu kitap diğer kitaplara yardım edeceği için.", "Mâzînin muzâri'ye takdîmi: geçmiş gelecekten, tahkīk teşkīkten, mücerred mezîdün fîhten mukaddemdir."], "hata": "Sarf ile nahvi karıştırmak. Sarf kelimenin kendi yapısını, nahiv cümle içindeki hâlini inceler. \"Sarf ilimlerin anası, nahiv babasıdır.\"", "kaynak": "Emsilenin_musannıfı.doc · Kitap s.1"}, "2": {"b": ["İsm-i fâil: işi yapan (نَاصِرٌ, fâ'il vezni). İsm-i mef'ûl: işin kendisine yapıldığı (مَنْصُورٌ, mef'ûl vezni).", "Fâilin mef'ûle takdîmi: fâil her fiile lâzımdır, mef'ûl değildir; ayrıca fâil ma'lûmdan, mef'ûl mechûlden müştaktır.", "فَ harfi fâ-i tefrî'iyyedir: ism-i fâilin fer', fiilin asıl olduğunu bildirir.", "هُوَ ve ذَاكَ niçin geldi: sülâsîde sîgalar ayrılır ama ziyâde bâblarda yalnız aynü'l-fiilin harekesi değişir (مُدَحْرِج / مُدَحْرَج) — karışmasın diye.", "Masdarın ism-i fâile takdîmi: masdar müştakun minh, ism-i fâil müştaktır."], "hata": "Çocuk نَاصِر ile مَنْصُور'u ters çevirir. Çare: \"م ile başlıyorsa işi yiyen, م yoksa işi yapan.\"", "kaynak": "2-MUHTELİFEDEKİ_SIRALAMA.doc · Kitap s.1"}, "3": {"b": ["لَمْ cahd-ı mutlak: geçmişte olmadı. لَمَّا cahd-ı müstağrak: henüz olmadı, beklenti vardır.", "مَا nefy-i hâl: şimdi olmuyor. لَا nefy-i istikbâl: gelecekte olmaz. لَنْ te'kîd: elbette olmaz.", "لَمْ ve لَمَّا dahil oldukları muzâri'yi lafzen muzâri', manen mâzî yapar; hem çevirir hem nefyeder.", "Beşinin de muzâri'nin başına geldiğine, mâzînin başına gelmediğine dikkat çekilir."], "hata": "مَا يَنْصُرُ ile لَا يَنْصُرُ karıştırılır. Ayırt edici tek şey zamandır: مَا şimdi, لَا gelecek.", "kaynak": "Emsilenin_musannıfı.doc 'Lem ve lemmâ' bendi · Kitap s.1"}, "4": {"b": ["Emr-i gâib: başında lâm-ı emir (لِيَنْصُرْ), vasıta ile verilen emirdir. Emr-i hâzır: karşıdakine (أُنْصُرْ).", "Nehiy, لَا + meczûm muzâri'dir. Nefiydeki لَا âmil değildir; nehiydeki لَا âmil-i semâîdendir.", "Nefiy ihbârîdir (haber verir), nehiy inşâîdir (talep eder).", "Emr-i hâzırın başındaki hemze vasıl hemzesidir; aynü'l-fiil dammeli ise dammeli, kesreli/fethalı ise kesreli okunur."], "hata": "لَا يَنْصُرُ (nefiy, merfû) ile لَا يَنْصُرْ (nehiy, meczûm) yalnız son harekeyle ayrılır. Tahtada iki harekeyi büyük ve renkli yaz.", "kaynak": "Kitap s.1 · Emsilenin_musannıfı.doc 'Nefî ile nehîy farkı'"}, "5": {"b": ["مَنْصَرٌ aslında üç vecihtir: ism-i zamân, ism-i mekân ve masdar-ı mîmî. Sîgaları aynı olduğu için tek vezinde birleşmiştir.", "Hangisi kastedildiği siyak ve sebaktan anlaşılır: هٰذَا الزَّمَان / هٰذَا الْمَكَان / هٰذَا الْفِعْل.", "مِنْصَرٌ ism-i âlettir, vezni مِفْعَلٌ. Eser ile müessir arasında vâsıtadır.", "İsm-i âlet ziyâde bâblardan gelmez (bütün harfleri korumak mümkün olmadığı için) ve lâzım fiilde bulunmaz.", "Kalem, müessir ile eser arasında vâsıtadır ama مِفْعَلٌ vezninde olmadığı için ism-i âlet değildir."], "hata": "مَكْتَبٌ ism-i âlet sanılır; hâlbuki ism-i mekândır. Ölçü vezindir: مَفْعَل mekân, مِفْعَل âlet.", "kaynak": "Emsilenin_musannıfı.doc 'İsmi âlet' bendi · Kitap s.1–2"}, "6": {"b": ["نَصْرَةً binâ-i merre: bir kere yapmak. نِصْرَةً binâ-i nev': bir türlü yapmak. Fark yalnız ilk harekededir.", "İsm-i tasgīr vezinleri: sülâsîde فُعَيْلٌ, rubâîde فُعَيْعِلٌ, humâsîde فُعَيْعِيلٌ. Misal: كَلَمٌ–كُلَيْمٌ, دَفْتَرٌ–دُفَيْتِرٌ.", "Allah'ın, peygamberlerin isimlerinde ve umûr-ı muazzamada tasgīr cârî olmaz; küçüklük acziyet ifade eder.", "Mükebberi ism-i fâil veya mef'ûl ise müennesi gelir; masdar ise gelmez.", "İsm-i mensûb nispet yâsıyla yapılır (نَصْرِيٌّ): o işe mensûb olan."], "hata": "Tasgīr \"az yardım eden\" diye çevrilir; doğrusu \"gücü yetmeyen, âciz\"dir. Ubeydullah misali bunu oturtur.", "kaynak": "Emsilenin_musannıfı.doc 'İsmi tesğir' bendi · Kitap s.2"}, "7": {"b": ["Mübâlağa ism-i fâil (نَصَّارٌ, فَعَّالٌ): çokça yapan. İsm-i tafdîl (أَنْصَرُ, أَفْعَلُ): daha çok yapan.", "Fark: mübâlağada mübâlağalık kendi nefsindedir; tafdîlde başkasına nisbetledir. زَيْدٌ أَفْضَلُ مِنْ عَمْرٍو misali.", "Taaccüb-i evvel مَا أَنْصَرَهُ, sânî وَأَنْصِرْ بِهِ. İkisinin manası birdir, kalıpları ayrıdır.", "Medine halkına niçin Ensâr denildiği bu kökten açılır; çocuğun hoşuna gider ve aklında kalır."], "hata": "أَنْصَرُ ile أُنْصُرْ karıştırılır: biri isim (ism-i tafdîl), diğeri fiil (emr-i hâzır). Ayırt edici harekedir.", "kaynak": "Emsilenin_musannıfı.doc 'Mübâlağa ile tafdîl farkı' · Kitap s.2"}, "8": {"b": ["Muhtelife önce fiil ve isme ayrılır: 13 fiil, 11 isim.", "Fiil ihbârî ve inşâî olur. İhbârî müsbet (2) ve menfî (5); inşâî talebî (4) ve gayr-i talebî (2, taaccüb).", "Talebî, husûlünü talep (emr-i gâib, emr-i hâzır) ve terkini talep (nehy-i gâib, nehy-i hâzır) olur.", "İsim müştak (6) ve câmid (7) olur; ayrıca sıfat (4) ve gayr-i sıfat (9).", "Müştak: fâil, mef'ûl, zamân, mekân, tafdîl, mübâlağa. Câmid: masdar, masdar-ı mîmî, âlet, merre, nev', tasgīr, mensûb."], "hata": "Çocuk şemayı ezberler ama örneğe uygulayamaz. Çare: her dalın altına bir sîga yazdır, şemayı boş verip örnekten sordur.", "kaynak": "Emsilenin_musannıfı.doc taksîmât bölümü · Sarf_-_Emsile_Taksimatı.pdf"}, "9": {"b": ["Muttaride: sîgası madde ve hey'ette müttehid olandır (nasara, nasarâ, nasarû…). Muhtelife ise ikisinde de muhteliftir.", "Önce ma'lûm–mechûl, sonra gâib–muhâtab–mütekellim, sonra müzekker–müennes, sonra müfred–tesniye–cem'.", "Gâib: mütekellim ve muhâtab olmayan. Aynı odada olsa da karşında değilse gâiptir.", "Mütekellim müzekker–müennes diye ayrılmaz; konuşanın sesinden erkek mi kadın mı olduğu bellidir.", "14 hâne: gâib 3 + gâibe 3 + muhâtab 3 + muhâtaba 3 + mütekellim 2."], "hata": "Tesniyede muhâtab ve muhâtaba aynıdır (نَصَرْتُمَا). Çocuk bunu hata sanır; kasıtlı olduğunu söyle.", "kaynak": "Emsilenin_musannıfı.doc muttaride tarifi · Kitap s.2"}, "10": {"b": ["Mâzî mebnî asıllardandır, fetha üzerine mebnîdir.", "Tasrîf: نَصَرَ، نَصَرَا، نَصَرُوا / نَصَرَتْ، نَصَرَتَا، نَصَرْنَ / نَصَرْتَ، نَصَرْتُمَا، نَصَرْتُمْ / نَصَرْتِ، نَصَرْتُمَا، نَصَرْتُنَّ / نَصَرْتُ، نَصَرْنَا.", "Gâib kısmında zamir sona gizli veya açık eklenir; muhâtab kısmında تُ grubu, mütekellimde تُ ve نَا.", "Ritim şarttır: üç üç okutulur, tesniyeler uzatılır. Ezber ritimden doğar."], "hata": "نَصَرْنَ (cemî gâibe) ile نَصَرْنَا (mütekellim) karıştırılır. Fark elif-i medde: biri \"onlar avretler\", diğeri \"biz\".", "kaynak": "Kitap s.2–3"}, "11": {"b": ["Bu hafta yeni bilgi yok; ezberin otomatikleşmesi hedeflenir.", "Kur'an'da mâzî bol: نَصَرَكُمُ اللَّهُ، أَنْزَلْنَاهُ، خَلَقَ، قَالُوا. Her birinde hangi hâne olduğu sorulur.", "Zamir–sîga eşleştirmesi: âyetteki fâil kim, sîga onu tutuyor mu?"], "hata": "Çocuk sîgayı doğru okur ama \"kim yaptı\"yı söyleyemez. Oyun 5 (Kim Yardım Etti?) bu eksiği kapatır.", "kaynak": "Kitap s.3 · Sîga Avı Defteri"}, "12": {"b": ["Mechûlde fâil hazfedilir, mef'ûl nâib-i fâil olur.", "Mâzî mechûlün kalıbı: fâü'l-fiil dammeli, aynü'l-fiil kesreli — نُصِرَ.", "Tasrîf ma'lûmun aynı sırayla yapılır: نُصِرَ، نُصِرَا، نُصِرُوا…", "Masdarın mechûlü yoktur; ism-i fâil manasına gelirse ma'lûm, ism-i mef'ûl manasına gelirse mechûl masdar olur."], "hata": "Çocuk mechûlü \"olumsuz\" sanır. Çare: mechûl işin olmadığı değil, yapanın söylenmediği demektir.", "kaynak": "Kitap s.3 · Emsilenin_musannıfı.doc masdar bendi"}, "13": {"b": ["Ma'lûm–mechûl karşılaştırma tablosu doldurulur.", "Kur'an'dan çift misal: خَلَقَ / خُلِقَ، كَتَبَ / كُتِبَ، قَتَلَ / قُتِلَ.", "Oyun 8 (Ma'lûm–Mechûl Düellosu) bu haftanın ana etkinliğidir."], "hata": "Mechûlü olmayan sîgalar (masdar gibi) sorulduğunda çocuk zorla türetmeye çalışır. Tuzak soruyu kasten sor.", "kaynak": "Kitap s.2–3"}, "14": {"b": ["Muzâri' âmil-i manevî ile merfûdur; fâili tahtında müstetirdir.", "Başına gelen dört harf: أ ن ي ت. Bunlar zamiri taşır.", "Tasrîf: يَنْصُرُ، يَنْصُرَانِ، يَنْصُرُونَ / تَنْصُرُ، تَنْصُرَانِ، يَنْصُرْنَ / تَنْصُرُ… / أَنْصُرُ، نَنْصُرُ.", "Muzâri' hem şimdiki hâli hem geleceği karşılar; hangisi olduğu karîne ile anlaşılır."], "hata": "Gâibe müfred تَنْصُرُ ile muhâtab müzekker تَنْصُرُ aynıdır. Bu da kasıtlıdır; karîne ayırır.", "kaynak": "Kitap s.3–4 · 2-MUHTELİFEDEKİ_SIRALAMA.doc"}, "15": {"b": ["Muzâri' mechûl: baştaki harf dammeli, aynü'l-fiil fethalı — يُنْصَرُ.", "Tasrîf ma'lûmla aynı sırada yürür.", "Kur'an bağlantısı: fiilin mechûl gelmesi çoğu yerde fâilin malûm oluşundan veya ta'zîmden dolayıdır."], "hata": "يَنْصُرُ ile يُنْصَرُ yalnız iki harekeyle ayrılır. Renkli hareke bu haftada hayat kurtarır.", "kaynak": "Kitap s.4"}, "16": {"b": ["Masdarın tasrîfi yoktur; müfred, tesniye, cem' olarak gelir.", "İsm-i fâil sülâsîde 10 sîga ile tasrîf edilir; ziyâde bâblarda sırf 6 sîga ile gelir.", "İsm-i mef'ûl de aynı şekilde; müzekker–müennes ve müfred–tesniye–cem' üzerinden yürür.", "İsimlerde mütekellim ve muhâtab hânesi yoktur; isim şahsa değil zâta delâlet eder."], "hata": "Çocuk isimleri de 14 hâne üzerinden çekmeye kalkar. Baştan söyle: isimler 14 değil, 6/10 hânedir.", "kaynak": "Kitap s.5 · Emsilenin_musannıfı.doc 'İsmi fail' bendi"}, "17": {"b": ["Ay 4'ün toplu tekrarı. Yeni bilgi yok.", "Bir âyet seçilip içindeki bütün sîgalar çıkarılır: Fâtiha 5 ve Kadr 1–5 bu iş için idealdir.", "Sîga Avı Defteri toplu gözden geçirilir; boş bırakılan sütunlar doldurulur."], "hata": "Tekrar haftasını hafife alma. Aralıklı tekrarın 21. gün hânesi bu hafta dolar.", "kaynak": "Kitap s.2–5"}, "18": {"b": ["لَمْ cezm eder; muzâri'nin sonu sâkin olur (لَمْ يَنْصُرْ).", "Cemî ve tesniye hânelerinde nûn düşer: لَمْ يَنْصُرُوا، لَمْ يَنْصُرَا.", "Mechûlü de tasrîf edilir: لَمْ يُنْصَرْ…", "Lafzen muzâri', manen mâzîdir; bu yüzden mâzîyi nefyeder."], "hata": "Nûnun düşmesi gözden kaçar. Tahtada nûnu yazıp üstünü çizerek göster.", "kaynak": "Kitap s.6"}, "19": {"b": ["لَمَّا da cezm eder, لَمْ gibi tasrîf edilir.", "Farkı: لَمَّا'da nefiy şimdiye kadar süregelir ve bir beklenti vardır — \"henüz olmadı ama olması bekleniyor\".", "Hucurât 14'teki وَلَمَّا يَدْخُلِ bu manayı çok açık gösterir: henüz girmedi, girmesi umuluyor."], "hata": "İki edat aynı sanılır. \"Henüz\" kelimesini Türkçe çeviriye mutlaka koydur; fark orada görünür.", "kaynak": "Kitap s.7–8 · Emsilenin_musannıfı.doc"}, "20": {"b": ["مَا nefy-i hâl: şimdiki zamanı nefyeder, muzâri'yi merfû bırakır.", "Tasrîfi muzâri'nin aynısıdır, başına مَا eklenir.", "لَمْ cezm eder, مَا etmez — bu, iki sîgayı ayırmanın en pratik ölçüsüdür."], "hata": "Çocuk مَا يَنْصُرُ'yu da cezmli okur. Son harekeyi her seferinde vurgulayarak okut.", "kaynak": "Kitap s.9–10"}, "21": {"b": ["لَا nefy-i istikbâl: geleceği nefyeder, muzâri' merfû kalır.", "مَا ile arasındaki tek fark zamandır; kalıp aynıdır.", "Nefiydeki لَا ile nehiydeki لَا aynı harftir ama biri âmil değil, diğeri âmil-i semâîdir."], "hata": "Nefiy لَا ile nehiy لَا karıştırılır. Ölçü: son hareke merfû ise nefiy, meczûm ise nehiydir.", "kaynak": "Kitap s.10–11"}, "22": {"b": ["Beş menfî sîga tek tabloda toplanır: zaman, edat, i'râb.", "لَمْ geçmiş/cezm · لَمَّا geçmiş+henüz/cezm · مَا şimdi/ref' · لَا gelecek/ref' · لَنْ gelecek+te'kîd/nasb.", "Oyun 7 (Zaman Makinesi) bu haftanın belkemiğidir."], "hata": "Tabloyu hoca doldurursa akılda kalmaz. Boş tabloyu çocuğa doldurt, sonra düzelt.", "kaynak": "Kitap s.6–11"}, "23": {"b": ["لَنْ nasb eder: sonu fethalı olur (لَنْ يَنْصُرَ). Diğer menfîlerden ayrıldığı nokta budur.", "Manası \"elbette olmaz\"; لَا'dan farkı te'kîd, yani manayı kuvvetlendirmesidir.", "Âl-i İmrân 92'deki لَنْ تَنَالُوا الْبِرَّ bu te'kîdi çok iyi gösterir."], "hata": "Fethalı son hareke unutulur. Üç edatı yan yana yazdır: لَا يَنْصُرُ / لَمْ يَنْصُرْ / لَنْ يَنْصُرَ — ref', cezm, nasb.", "kaynak": "Kitap s.12–13"}, "24": {"b": ["Emr-i gâib: lâm-ı emir + meczûm muzâri'. Lâm aslen kesrelidir (لِيَنْصُرْ).", "وَ veya فَ'den sonra lâm sâkin okunur: فَلْيَعْبُدُوا.", "Hazırda olmayana, vasıta ile verilen emirdir.", "Mechûlü de gelir: لِيُنْصَرْ."], "hata": "Çocuk emr-i gâibi emr-i hâzır sanır. Ölçü: başında لِ varsa gâib, hemze varsa hâzırdır.", "kaynak": "Kitap s.14"}, "25": {"b": ["Nehy-i gâib: لَا + meczûm muzâri' (لَا يَنْصُرْ). Emr-i gâibin olumsuzudur.", "Nefiy ile nehiy farkı ikidir: (1) nefiy haber verir, nehiy talep eder — biri ihbârî, öteki inşâî. (2) Nefiydeki لَا âmil değildir, nehiydeki âmil-i semâîdendir.", "Aynı harfin iki ayrı iş görmesi çocuğa şaşırtıcı gelir; bu şaşkınlık iyi bir öğretim fırsatıdır."], "hata": "لَا يَنْصُرُ / لَا يَنْصُرْ ayrımı bu yılın en çok hata verilen yeridir. Her derste bir kez sordur.", "kaynak": "Kitap s.15 · Emsilenin_musannıfı.doc 'Nefî ile nehîy'"}, "26": {"b": ["Ay 6 toplu tekrarı. Yeni bilgi yok.", "Karma âyet setinden \"bu emir mi, haber mi?\" sorusu çalışılır.", "İnşâî–ihbârî ayrımı Hafta 8'deki taksîmât şemasına bağlanır; şema tekrar açılır."], "hata": "Tekrar haftalarında çocuk gevşer. Oyun ağırlığını artır, yeni bilgi verme.", "kaynak": "Kitap s.12–15"}, "27": {"b": ["Emr-i hâzır muzâri'den yapılır: baştaki harf atılır, gereken yerde vasıl hemzesi getirilir.", "Hemzenin harekesi aynü'l-fiile göredir: dammeli ise dammeli (أُنْصُرْ), kesreli/fethalı ise kesreli (اِضْرِبْ، اِفْتَحْ).", "Muhâtaba ve cemî hânelerinde nûn düşer: اُنْصُرِي، اُنْصُرُوا.", "Emr-i hâzırın mechûlü lâm-ı emirle gelir (لِتُنْصَرْ)."], "hata": "Hemzenin harekesi ezberden söylenir, kuralı bilinmez. Üç misali (نصر، ضرب، فتح) yan yana yazdır.", "kaynak": "Kitap s.16"}, "28": {"b": ["Nehy-i hâzır: لَا + muhâtab meczûm muzâri' (لَا تَنْصُرْ).", "Muhâtaba müfredde nûn düşer ve yâ kalır: لَا تَنْصُرِي.", "Emr-i hâzırın aksine burada baştaki تَ korunur; çocuğa bu kıyas yaptırılır.", "Duhâ 9–10 (فَلَا تَقْهَرْ / فَلَا تَنْهَرْ) hem nehiy hem ahlâk dersidir."], "hata": "لَا تَنْصُرْ ile لَا يَنْصُرْ karıştırılır: biri sana, öteki ona. Baştaki harf ayırt eder.", "kaynak": "Kitap s.17"}, "29": {"b": ["Bu sayfada beş sîga bir arada: zamân/mekân/mîmî, âlet, merre, nev', tasgīr.", "مَنْصَرٌ'un üç vechi tekrar hatırlatılır; siyak-sebak vurgulanır.", "İsm-i âletin lâzım fiilde gelmeyişi: her âletin bir eseri vardır, lâzım fiil mef'ûle geçmez.", "Merre ile nev' arasındaki fark yalnız ilk harekededir; tahtada yan yana yazılır."], "hata": "Beş sîga bir derste sıkıştırılırsa hiçbiri oturmaz. İki güne böl: üç sîga + iki sîga.", "kaynak": "Kitap s.18 · Emsilenin_musannıfı.doc"}, "30": {"b": ["İsm-i mensûb: nispet yâsı ile, müşedded (نَصْرِيٌّ).", "Mübâlağa ism-i fâil vezni فَعَّالٌ; Kur'an'da غَفَّار، تَوَّاب، قَهَّار.", "İsm-i tafdîl vezni أَفْعَلُ; müennesi فُعْلَى gelir (أَكْبَر / كُبْرَى).", "Mübâlağa kendi nefsinde, tafdîl başkasına nisbetle çokluk bildirir."], "hata": "أَفْعَلُ vezni hem tafdîl hem bazı fiillerde emir görünür. Bağlamdan ayırmayı öğret.", "kaynak": "Kitap s.19"}, "31": {"b": ["Taaccüb-i evvel: مَا أَنْصَرَهُ. Taaccüb-i sânî: وَأَنْصِرْ بِهِ. Manaları birdir.", "Sânînin tasrîfi zamirler üzerinden yürür: بِهِ، بِهَا، بِهِمَا، بِكَ، بِكُمْ، بِي، بِنَا…", "Kur'an'da أَسْمِعْ بِهِمْ وَأَبْصِرْ (Meryem 38) taaccüb-i sânînin en açık misalidir.", "Kitap burada biter. Ferâğ kaydı 1317 tarihlidir; çocuğa gösterilir, hatim merâsimi yapılır."], "hata": "مَا أَنْصَرَهُ'daki مَا nefiy sanılır. Burada mâ-i taaccübiyyedir; nefiy değildir.", "kaynak": "Kitap s.20–21"}, "32": {"b": ["Aynı 24 kalıp, yeni kökle tekrarlanır: كَتَبَ، يَكْتُبُ، كِتَابَةً…", "Çocuk artık kalıbı biliyor; yalnız harfleri değiştiriyor. Bu, yılın en tatmin edici haftasıdır.", "KELİME_ÇEKİM.xls'teki hazır çekimler kontrol için kullanılır.", "Bakara 183'teki كُتِبَ عَلَيْكُمُ الصِّيَامُ mechûlü hatırlatır."], "hata": "Masdarlar semâîdir; her kökte نَصْرًا kalıbı gelmez (كِتَابَةً gibi). Bunu baştan söyle, ezberletme.", "kaynak": "KELİME_ÇEKİM.xls · Kitap s.1"}, "33": {"b": ["فَتَحَ يَفْتَحُ: aynü'l-fiil ve lâmü'l-fiil hançere harfi olduğu için muzâri'si fethalıdır.", "خَرَجَ يَخْرُجُ: نَصَرَ ile aynı bâbdandır, kıyas kolaydır.", "Buradan bâb kavramı sezdirilmeye başlanır — ama adı henüz konmaz, Binâ'ya bırakılır."], "hata": "Çocuk \"niçin yeftehu, yefruhu değil?\" diye sorar. Cevabı Binâ'ya havale et ama soruyu takdir et.", "kaynak": "KELİME_ÇEKİM.xls"}, "34": {"b": ["دَخَلَ يَدْخُلُ: nasara bâbı. عَلِمَ يَعْلَمُ: mâzîsi kesreli, muzâri'si fethalı — ayrı bâb.", "İki kökü yan yana koy: çocuk kendiliğinden \"bunlar farklı çalışıyor\" der. Köprü buradan kurulur.", "\"Bu farklara bâb denir, gelecek kitabımız Binâ bunları anlatır.\""], "hata": "Bâb bahsini burada açma; merak uyandır, kapat. Erken açılan bâb bahsi Emsile ezberini bozar.", "kaynak": "KELİME_ÇEKİM.xls · Binâ mukaddimesi"}, "35": {"b": ["Yıl boyu tutulan Sîga Avı Defteri toplu okunur.", "Fâtiha ve Amme cüzünün son on sûresi taranır; bulunan her sîga adıyla söylenir.", "Nasr sûresi panodan indirilir: bir yıl önce işaretlenmemiş olan kelimelerin hepsi artık işaretlidir. Bu, yılın kapanış sahnesidir."], "hata": "Bu haftayı sınav haftası gibi yapma. Kutlama havası, ezberi mühürler.", "kaynak": "Sîga Avı Defteri · Mushaf"}, "36": {"b": ["24 sîga ezberden, sırayla ve manasıyla sorulur.", "Tasrîf turnuvası: Oyun 2 ve Oyun 9 birleştirilir.", "Eksik kalan sîgalar not edilir, 37. haftada onlara ağırlık verilir."], "hata": "Ezber sınavını not için değil, eksik tespiti için yap. Çocuğa da böyle söyle.", "kaynak": "Kitap s.1–2"}, "37": {"b": ["Aralıklı tekrar kutusunun 60. gün bölmesi bu hafta tamamen boşaltılır.", "Muttarideden zayıf kalan sîgalar tekrar tasrîf edilir.", "Genel imtihana hazırlık: geçmiş sekiz imtihanın yanlışları gözden geçirilir."], "hata": "Her şeyi tekrar etmeye çalışma. Uygulamadaki tekrar listesi hangi konuların zayıf olduğunu zaten söylüyor; onlara odaklan.", "kaynak": "Kitap s.2–21"}, "38": {"b": ["Genel imtihan: 20 soru, 45 dakika.", "İmtihan sonrası aynı gün değerlendirme yapılmaz; ertesi güne bırakılır.", "Sonuçlar uygulamaya girilir, çıkan tekrar listesi 39. haftanın içeriğini belirler."], "hata": "İmtihanı yıl sonu yargısı gibi sunma. \"Nereyi sağlamlaştıracağımızı görelim\" çerçevesi doğrudur.", "kaynak": "IMTIHANLAR_Emsile.docx"}, "39": {"b": ["Değerlendirme, icâzet merâsimi, Nasr sûresi üzerine kapanış sohbeti.", "Binâ'ya giriş: sülâsî mücerredin bâbları, mezîdün fîh kavramı — yalnız tanıtım.", "\"Emsile sîgayı öğretti, Binâ bâbı öğretecek.\" Zincirin devamı gösterilir: Emsile → Binâ → Maksûd → Avâmil → İzhâr → Kâfiye."], "hata": "Bitişi sessizce geçme. Merâsim, dokuz ayın hafızada kalmasını sağlayan son çividir.", "kaynak": "Kitap s.21 ferâğ kaydı · Binâ mukaddimesi"}}};
+const IMTIHANLAR = VERI.imtihanlar, OYUNLAR = VERI.oyunlar, KONULAR = VERI.konular, NOTLAR = VERI.haftaNotlari;
+
+const HAFTALAR=[
+ [1,1,"Sarf nedir? Emsile, musannıf, kök ve kalıp. نَصَرَ / يَنْصُرُ / نَصْرًا","s.1"],
+ [2,1,"İsm-i fâil ve ism-i mef'ûl: فَهُوَ نَاصِرٌ / وَذَاكَ مَنْصُورٌ","s.1"],
+ [3,1,"Menfî beşli: لَمْ / لَمَّا / مَا / لَا / لَنْ","s.1"],
+ [4,1,"Emir ve nehiy (gâib + hâzır) · İmtihan 1","s.1"],
+ [5,2,"مَنْصَرٌ (zaman/mekân, masdar-ı mîmî) ve مِنْصَرٌ (âlet)","s.1-2"],
+ [6,2,"Binâ-i merre, binâ-i nev', ism-i tasgīr, ism-i mensûb","s.2"],
+ [7,2,"Mübâlağa, ism-i tafdîl, taaccüb-i evvel ve sânî","s.2"],
+ [8,2,"Toplu tekrar + taksîmât şeması · İmtihan 2","s.1-2"],
+ [9,3,"Muttaride mantığı: 14 hânenin kuruluşu","s.2"],
+ [10,3,"Mâzî ma'lûm tam tasrîf","s.2-3"],
+ [11,3,"Mâzî ma'lûm pekiştirme + Kur'an'da mâzî avı","s.3"],
+ [12,3,"Mâzî mechûl tam tasrîf","s.3"],
+ [13,3,"Ma'lûm–mechûl ayırt etme atölyesi · İmtihan 3","s.2-3"],
+ [14,4,"Muzâri' ma'lûm tam tasrîf","s.3-4"],
+ [15,4,"Muzâri' mechûl tam tasrîf","s.4"],
+ [16,4,"Masdar, ism-i fâil, ism-i mef'ûl tasrîfleri","s.5"],
+ [17,4,"Kur'an atölyesi: bir âyette kaç sîga var? · İmtihan 4","s.2-5"],
+ [18,5,"Cahd-ı mutlak (لَمْ) ma'lûm + mechûl","s.6"],
+ [19,5,"Cahd-ı müstağrak (لَمَّا) ma'lûm + mechûl","s.7-8"],
+ [20,5,"Nefy-i hâl (مَا) ma'lûm + mechûl","s.9-10"],
+ [21,5,"Nefy-i istikbâl (لَا) ma'lûm + mechûl","s.10-11"],
+ [22,5,"Beş menfî sîganın farkı · İmtihan 5","s.6-11"],
+ [23,6,"Te'kîd-i nefy-i istikbâl (لَنْ)","s.12-13"],
+ [24,6,"Emr-i gâib (لِيَنْصُرْ)","s.14"],
+ [25,6,"Nehy-i gâib (لَا يَنْصُرْ)","s.15"],
+ [26,6,"Emir mi haber mi? Kur'an atölyesi · İmtihan 6","s.12-15"],
+ [27,7,"Emr-i hâzır (أُنْصُرْ)","s.16"],
+ [28,7,"Nehy-i hâzır (لَا تَنْصُرْ)","s.17"],
+ [29,7,"Zamân/mekân, mîmî, âlet, merre, nev', tasgīr","s.18"],
+ [30,7,"İsm-i mensûb, mübâlağa, ism-i tafdîl · İmtihan 7","s.19"],
+ [31,8,"Taaccüb evvel ve sânî — KİTAP HATİM","s.20-21"],
+ [32,8,"Yeni kök: كَتَبَ tam muhtelife","—"],
+ [33,8,"Yeni kökler: فَتَحَ ve خَرَجَ","—"],
+ [34,8,"Yeni kökler: دَخَلَ ve عَلِمَ (bâba köprü)","—"],
+ [35,8,"Kur'an tarama haftası · İmtihan 8","tüm"],
+ [36,9,"24 sîga ezber sınavı + tasrîf turnuvası","s.1-2"],
+ [37,9,"Muttaride toplu tekrar","s.2-21"],
+ [38,9,"Genel imtihan","tüm"],
+ [39,9,"Değerlendirme, icâzet, Binâ'ya giriş","—"]];
+const AYBASLIK={1:"Ay 1 · Temel ve Muhtelife (fiil)",2:"Ay 2 · Muhtelife (isim) ve taksîmât",3:"Ay 3 · Muttaride: mâzî",
+ 4:"Ay 4 · Muzâri' ve müştak isimler",5:"Ay 5 · Menfî sîgaların tasrîfi",6:"Ay 6 · Te'kîd, emir ve nehiy (gâib)",
+ 7:"Ay 7 · Emir/nehiy (hâzır) ve isimler",8:"Ay 8 · Taaccüb ve yeni kökler",9:"Ay 9 · Ustalaşma ve icâzet"};
+const GUN=["Pzt","Sal","Çar","Per","Cum"];
+const SIGALAR=[["نَصَرَ","Fi'l-i mâzî"],["يَنْصُرُ","Fi'l-i muzâri'"],["نَصْرًا","Masdar"],["فَهُوَ نَاصِرٌ","İsm-i fâil"],
+ ["وَذَاكَ مَنْصُورٌ","İsm-i mef'ûl"],["لَمْ يَنْصُرْ","Cahd-ı mutlak"],["لَمَّا يَنْصُرْ","Cahd-ı müstağrak"],["مَا يَنْصُرُ","Nefy-i hâl"],
+ ["لَا يَنْصُرُ","Nefy-i istikbâl"],["لَنْ يَنْصُرَ","Te'kîd-i nefy-i istikbâl"],["لِيَنْصُرْ","Emr-i gâib"],["لَا يَنْصُرْ","Nehy-i gâib"],
+ ["أُنْصُرْ","Emr-i hâzır"],["لَا تَنْصُرْ","Nehy-i hâzır"],["مَنْصَرٌ","İsm-i zamân/mekân, masdar-ı mîmî"],["مِنْصَرٌ","İsm-i âlet"],
+ ["نَصْرَةً","Binâ-i merre"],["نِصْرَةً","Binâ-i nev'"],["نُصَيْرٌ","İsm-i tasgīr"],["نَصْرِيٌّ","İsm-i mensûb"],
+ ["نَصَّارٌ","Mübâlağa ism-i fâil"],["أَنْصَرُ","İsm-i tafdîl"],["مَا أَنْصَرَهُ","Taaccüb-i evvel"],["وَأَنْصِرْ بِهِ","Taaccüb-i sânî"]];
+const HOCA=[[1,"Musannıf notları + Dâvûd-i Karsî mukaddimesi"],[2,"Dâvûd-i Karsî: muhtelife bahsi"],[3,"Köse Efendi: muttaride mukaddimesi"],
+ [4,"Her iki şerh: mechûl bahsi"],[5,"Dâvûd-i Karsî: nefiy edatları"],[6,"Köse Efendi: nefiy–nehiy farkı"],
+ [7,"Her iki şerh: câmid isimler"],[8,"Dâvûd-i Karsî: tasgīr ve tafdîl"],[9,"Ferâğ kaydı + Binâ mukaddimesi"]];
+const SIK=["A","B","C","D"];
+
+const ANAHTAR="emsile-takip-v1";
+let S={gunler:{},notlar:{},sigalar:{},sinav:{},hoca:{},yanlis:{}};
+let sekme="haftalar", acikNot=null, acikNotu=null, acikIm=null, cevapAcik={}, acikOyun=null, kayitZaman=null;
+
+function bildir(m){const el=document.getElementById("durum");el.textContent=m;el.classList.add("gor");
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("gor"),1800);}
+const DEPO={
+  async oku(k){ if(window.storage){try{const r=await window.storage.get(k);return r&&r.value?r.value:null;}catch(e){return null;}}
+    try{return localStorage.getItem(k);}catch(e){return null;} },
+  async yaz(k,v){ if(window.storage){try{return await window.storage.set(k,v);}catch(e){return null;}}
+    try{localStorage.setItem(k,v);return true;}catch(e){return null;} },
+  async sil(k){ if(window.storage){try{return await window.storage.delete(k);}catch(e){return null;}}
+    try{localStorage.removeItem(k);return true;}catch(e){return null;} }
+};
+async function yukle(){
+  const v=await DEPO.oku(ANAHTAR);
+  if(v){try{S=Object.assign(S,JSON.parse(v));}catch(e){}}
+  ciz();
+}
+function kaydet(){clearTimeout(kayitZaman);kayitZaman=setTimeout(async()=>{
+  const r=await DEPO.yaz(ANAHTAR,JSON.stringify(S));
+  if(!r)bildir("Kaydedilemedi");},350);}
+function yedekAl(){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:"application/json"}));
+  a.download="emsile-yedek-"+new Date().toISOString().slice(0,10)+".json";
+  a.click();bildir("Yedek indirildi");
+}
+function yedekYukle(dosya){
+  const fr=new FileReader();
+  fr.onload=()=>{try{S=Object.assign({gunler:{},notlar:{},sigalar:{},sinav:{},hoca:{},yanlis:{}},JSON.parse(fr.result));
+    kaydet();ciz();bildir("Yedek geri yüklendi");}catch(e){bildir("Dosya okunamadı");}};
+  fr.readAsText(dosya);
+}
+const bittiMi=h=>(S.gunler[h]||[]).length===5;
+function gunToggle(h,g){const a=S.gunler[h]||[];const i=a.indexOf(g);if(i>-1)a.splice(i,1);else a.push(g);
+  if(a.length)S.gunler[h]=a;else delete S.gunler[h];kaydet();ciz();}
+function tekToggle(kap,k){if(S[kap][k])delete S[kap][k];else S[kap][k]=1;kaydet();ciz();}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function arSar(t){return esc(t).replace(/[\u0600-\u06FF\u064B-\u0652\u0640][\u0600-\u06FF\u064B-\u0652\u0640\s]*/g,m=>'<span class="ar">'+m+'</span>');}
+function simdikiHafta(){for(const w of HAFTALAR)if(!bittiMi(w[0]))return w[0];return 39;}
+
+function ciz(){
+  const toplamGun=Object.values(S.gunler).reduce((a,b)=>a+b.length,0);
+  const yuzde=Math.round(toplamGun/195*100);
+  const simdi=simdikiHafta(), ezber=Object.keys(S.sigalar).length;
+  let h=`<header class="bas"><h1>Emsile Takip</h1><p class="alt">39 hafta · 195 ders · günde bir saat</p></header>
+  <div class="ozet">
+    <div><b>${toplamGun}</b><span>işaretli ders</span></div>
+    <div><b>${yuzde}%</b><span>tamamlandı</span></div>
+    <div><b>${simdi}</b><span>bu haftadasın</span></div>
+    <div><b>${ezber}/24</b><span>sîga ezberde</span></div>
+  </div>
+  <div class="cubuk"><i style="width:${yuzde}%"></i></div><nav role="tablist">`;
+  [["haftalar","Haftalar"],["sigalar","Sîgalar"],["imtihan","İmtihanlar"],["oyunlar","Oyunlar"],["hoca","Hoca"]]
+    .forEach(([k,t])=>{h+=`<button role="tab" aria-selected="${sekme===k}" data-sekme="${k}">${t}</button>`;});
+  h+=`</nav>`;
+
+  if(sekme==="haftalar"){
+    let ay=0;
+    HAFTALAR.forEach(([no,a,konu,sayfa])=>{
+      if(a!==ay){ay=a;h+=`<h2 class="ay">${AYBASLIK[a]}</h2>`;}
+      const sec=S.gunler[no]||[];
+      h+=`<div class="hafta ${bittiMi(no)?"bitti":""} ${no===simdi?"simdi":""}"><div class="ic">
+        <div class="ust"><span class="no">Hafta ${no}</span><span class="konu">${arSar(konu)}</span><span class="sayfa">${esc(sayfa)}</span></div><div class="gunler">`;
+      GUN.forEach((g,i)=>{h+=`<button class="gun" aria-pressed="${sec.includes(i)}" aria-label="Hafta ${no} ${g}" data-h="${no}" data-g="${i}">${g}</button>`;});
+      h+=`</div><button class="link" data-notu="${no}">${acikNotu===no?"müzâkere notunu kapat":"müzâkere notu"}</button>
+        <button class="link" data-not="${no}" style="margin-left:14px">${acikNot===no?"notu kapat":(S.notlar[no]?"notum ●":"not ekle")}</button>`;
+      if(acikNotu===no){
+        const n=NOTLAR[no];
+        if(n){
+          h+=`<div class="mnot"><ul>`;
+          n.b.forEach(x=>{h+=`<li>${arSar(x)}</li>`;});
+          h+=`</ul><p class="uyari"><b>Sık yapılan hata.</b> ${arSar(n.hata)}</p>
+               <p class="kyn">${arSar(n.kaynak)}</p></div>`;
+        }
+      }
+      if(acikNot===no)h+=`<textarea data-notalan="${no}" placeholder="Nasıl geçti? Neyi tekrar etmeli?">${esc(S.notlar[no]||"")}</textarea>`;
+      h+=`</div></div>`;
+    });
+  }
+
+  if(sekme==="sigalar"){
+    h+=`<h2 class="ay">Emsile-i Muhtelife · 24 sîga</h2>`;
+    SIGALAR.forEach(([a,ad],i)=>{
+      h+=`<div class="satir ${i===SIGALAR.length-1?"son":""} ${S.sigalar[i]?"bitti":""}">
+        <button class="kutu" aria-pressed="${!!S.sigalar[i]}" aria-label="${esc(ad)} ezberlendi" data-siga="${i}"></button>
+        <span class="metin"><span class="ar">${a}</span><span class="kucuk">${i+1}. ${esc(ad)}</span></span></div>`;
+    });
+  }
+
+  if(sekme==="imtihan"){
+    h+=`<h2 class="ay">Dokuz imtihan · yanlışları işaretle, tekrar planını gör</h2>`;
+    const genel={};
+    IMTIHANLAR.forEach((im,ix)=>{((S.yanlis&&S.yanlis[ix])||[]).forEach(qi=>{
+      const k=im.sorular[qi].k;genel[k]=(genel[k]||0)+1;});});
+    const gs=Object.keys(genel).sort((a,b)=>genel[b]-genel[a]);
+    if(gs.length){
+      h+=`<div class="tekrar" style="margin-bottom:16px"><h4>Bütün imtihanların toplamı — en zayıf konular</h4>`;
+      gs.slice(0,5).forEach(k=>{h+=`<div class="tsat"><b>${esc(KONULAR[k].ad)} — ${genel[k]} yanlış</b><span>${arSar(KONULAR[k].tekrar)}</span></div>`;});
+      if(gs.length>5)h+=`<p style="margin:0;font-size:11.5px;color:var(--murekkep-soluk)">+${gs.length-5} konu daha</p>`;
+      h+=`</div>`;
+    }
+    IMTIHANLAR.forEach((im,i)=>{
+      const yap=!!(S.sinav[i]&&S.sinav[i].y), acik=acikIm===i;
+      const yanlis=(S.yanlis&&S.yanlis[i])||[];
+      h+=`<div class="satir ${yap?"bitti":""}">
+        <button class="kutu" aria-pressed="${yap}" aria-label="${esc(im.ad)} yapıldı" data-sinav="${i}"></button>
+        <span class="metin">${esc(im.ad)}<span class="kucuk">Hafta ${im.hafta} · ${esc(im.kapsam)} · ${im.sorular.length} soru${yanlis.length?" · "+yanlis.length+" yanlış":""}</span></span>
+        <input class="puan" inputmode="numeric" placeholder="/${im.sorular.length}" value="${esc((S.sinav[i]&&S.sinav[i].p)||"")}" data-puan="${i}" aria-label="${esc(im.ad)} doğru sayısı">
+        <button class="ac" data-im="${i}" aria-expanded="${acik}">${acik?"kapat":"aç"}</button></div>`;
+      if(acik){
+        const cg=!!cevapAcik[i];
+        h+=`<div class="panel">
+          <p class="ipucu">Yanlış yapılan sorunun numarasına dokun. Aşağıda hangi konuların üstünden geçilmesi gerektiği çıkar.</p>`;
+        im.sorular.forEach((q,qi)=>{
+          const y=yanlis.includes(qi);
+          h+=`<div class="soru"><p><button class="sno ${y?"yanlis":""}" data-yanlis="${i}" data-q="${qi}" aria-pressed="${y}" aria-label="${qi+1}. soru yanlış">${qi+1}</button> ${arSar(q.s)}</p><ol>`;
+          q.se.forEach((s,si)=>{h+=`<li class="${cg&&si===q.c?"dogru":""}">${arSar(s)}</li>`;});
+          h+=`</ol></div>`;
+        });
+        h+=`<button class="link" data-cevap="${i}">${cg?"cevapları gizle":"cevapları göster"}</button>`;
+        if(yanlis.length){
+          const sayac={};
+          yanlis.forEach(qi=>{const k=im.sorular[qi].k;sayac[k]=(sayac[k]||0)+1;});
+          const sirali=Object.keys(sayac).sort((a,b)=>sayac[b]-sayac[a]);
+          h+=`<div class="tekrar"><h4>Tekrar planı — ${sirali.length} konu</h4>`;
+          sirali.forEach(k=>{
+            const ko=KONULAR[k], n=sayac[k];
+            h+=`<div class="tsat"><b>${esc(ko.ad)}${n>1?" ("+n+" soru)":""}</b><span>${arSar(ko.tekrar)}</span></div>`;
+          });
+          h+=`<button class="link" data-temizle="${i}">işaretleri temizle</button></div>`;
+        }
+        h+=`</div>`;
+      }
+    });
+  }
+
+  if(sekme==="oyunlar"){
+    h+=`<h2 class="ay">On iki oyun</h2>`;
+    OYUNLAR.forEach((o,i)=>{
+      const acik=acikOyun===i;
+      h+=`<div class="satir">
+        <span class="metin"><b>${o.no}. ${esc(o.ad)}</b><span class="kucuk">${esc(o.sure)} · ${esc(o.nezaman)}</span></span>
+        <button class="ac" data-oyun="${i}" aria-expanded="${acik}">${acik?"kapat":"aç"}</button></div>`;
+      if(acik){
+        h+=`<div class="panel ${i===OYUNLAR.length-1?"son":""}">
+          <h4>Hazırlık</h4><p class="ad">${arSar(o.hazirlik)}</p>
+          <h4>Nasıl oynanır</h4><ol class="adim">`;
+        o.nasil.forEach(n=>{h+=`<li>${arSar(n)}</li>`;});
+        h+=`</ol><h4>Varyasyon</h4><p class="ad">${arSar(o.varyasyon)}</p></div>`;
+      }
+    });
+  }
+
+  if(sekme==="hoca"){
+    h+=`<h2 class="ay">Şerh okuma rotası</h2>`;
+    HOCA.forEach(([ay,ad],i)=>{
+      h+=`<div class="satir ${i===HOCA.length-1?"son":""} ${S.hoca[ay]?"bitti":""}">
+        <button class="kutu" aria-pressed="${!!S.hoca[ay]}" aria-label="Ay ${ay} okuması tamam" data-hoca="${ay}"></button>
+        <span class="metin">${esc(ad)}<span class="kucuk">Ay ${ay}</span></span></div>`;
+    });
+    h+=`<p style="font-size:13px;color:var(--murekkep-soluk);margin-top:14px">Haftada 20–30 dakika. Ay bitmeden işaretleme.</p>`;
+  }
+
+  h+=`<footer><span>Kayıtlar bu cihazda durur.</span><span><button id="yedek">Yedek al</button> <button id="geri">Geri yükle</button> <button id="sifirla">Sıfırla</button></span></footer><input type="file" id="dosya" accept="application/json" style="display:none">`;
+  document.getElementById("app").innerHTML=h;
+  bagla();
+}
+
+function bagla(){
+  const a=document.getElementById("app");
+  a.querySelectorAll("[data-sekme]").forEach(b=>b.onclick=()=>{sekme=b.dataset.sekme;acikNot=acikNotu=acikIm=acikOyun=null;ciz();window.scrollTo(0,0);});
+  a.querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>gunToggle(+b.dataset.h,+b.dataset.g));
+  a.querySelectorAll("[data-siga]").forEach(b=>b.onclick=()=>tekToggle("sigalar",b.dataset.siga));
+  a.querySelectorAll("[data-hoca]").forEach(b=>b.onclick=()=>tekToggle("hoca",b.dataset.hoca));
+  a.querySelectorAll("[data-im]").forEach(b=>b.onclick=()=>{const i=+b.dataset.im;acikIm=acikIm===i?null:i;ciz();});
+  a.querySelectorAll("[data-oyun]").forEach(b=>b.onclick=()=>{const i=+b.dataset.oyun;acikOyun=acikOyun===i?null:i;ciz();});
+  a.querySelectorAll("[data-notu]").forEach(b=>b.onclick=()=>{const n=+b.dataset.notu;acikNotu=acikNotu===n?null:n;acikNot=null;ciz();});
+  a.querySelectorAll("[data-yanlis]").forEach(b=>b.onclick=()=>{
+    const i=b.dataset.yanlis, q=+b.dataset.q;
+    S.yanlis=S.yanlis||{}; const a2=S.yanlis[i]||[]; const j=a2.indexOf(q);
+    if(j>-1)a2.splice(j,1);else a2.push(q);
+    if(a2.length)S.yanlis[i]=a2;else delete S.yanlis[i];
+    kaydet();ciz();});
+  a.querySelectorAll("[data-temizle]").forEach(b=>b.onclick=()=>{delete S.yanlis[b.dataset.temizle];kaydet();ciz();});
+  a.querySelectorAll("[data-cevap]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cevap;cevapAcik[i]=!cevapAcik[i];ciz();});
+  a.querySelectorAll("[data-not]").forEach(b=>b.onclick=()=>{const n=+b.dataset.not;acikNot=acikNot===n?null:n;ciz();
+    const t=document.querySelector("[data-notalan]");if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length);}});
+  const ta=a.querySelector("[data-notalan]");
+  if(ta)ta.oninput=()=>{const n=+ta.dataset.notalan;if(ta.value.trim())S.notlar[n]=ta.value;else delete S.notlar[n];kaydet();};
+  a.querySelectorAll("[data-sinav]").forEach(b=>b.onclick=()=>{const i=b.dataset.sinav;S.sinav[i]=S.sinav[i]||{};
+    S.sinav[i].y=S.sinav[i].y?0:1;kaydet();ciz();});
+  a.querySelectorAll("[data-puan]").forEach(inp=>inp.oninput=()=>{const i=inp.dataset.puan;S.sinav[i]=S.sinav[i]||{};
+    S.sinav[i].p=inp.value;kaydet();});
+  const yb=document.getElementById("yedek");if(yb)yb.onclick=yedekAl;
+  const gb=document.getElementById("geri"),df=document.getElementById("dosya");
+  if(gb&&df){gb.onclick=()=>df.click();df.onchange=()=>{if(df.files[0])yedekYukle(df.files[0]);};}
+  const s=document.getElementById("sifirla");
+  if(s)s.onclick=async()=>{if(!confirm("Bütün işaretler ve notlar silinsin mi?"))return;
+    S={gunler:{},notlar:{},sigalar:{},sinav:{},hoca:{},yanlis:{}};
+    await DEPO.sil(ANAHTAR);
+    bildir("Sıfırlandı");ciz();};
+}
+yukle();
+</script>
+
+<script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
